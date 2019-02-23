@@ -1,0 +1,30 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="CustomMaterialCard" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">7.5dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeColor">#D9D9D9</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+
+    <style name="InputTextCustom" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusBottomEnd">7.5dp</item>
+        <item name="boxCornerRadiusBottomStart">7.5dp</item>
+        <item name="boxCornerRadiusTopEnd">7.5dp</item>
+        <item name="boxCornerRadiusTopStart">7.5dp</item>
+    </style>
+
+    <style name="GoogleSansFont">
+        <item name="fontFamily">@font/google_sans</item>
+    </style>
+
+</resources>

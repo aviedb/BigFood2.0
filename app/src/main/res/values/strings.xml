@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">BigFood</string>
+    <string name="restaurant_list">Restaurant List</string>
+    <string name="search_for_restaurant">Coffee anyone?</string>
+    <string name="search_for_menu">What\'s on your mind?</string>
+    <string name="available_menu">Available menu</string>
+    <string name="restaurant_address">Restaurant Address</string>
+    <string name="restaurant_name">Restaurant Name</string>
+    <string name="add_restaurant">Add Restaurant</string>
+    <string name="add_menu">Add Menu</string>
+    <string name="menu_name">Menu Name</string>
+    <string name="menu_description">Menu Description</string>
+    <string name="menu_price">Menu Price</string>
+    <string name="edit_or_delete_restaurant">Edit or Delete Restaurant</string>
+</resources>
