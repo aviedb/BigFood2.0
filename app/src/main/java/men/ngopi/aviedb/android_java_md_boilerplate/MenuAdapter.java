@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -77,14 +78,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
 
         @Override
         public void onClick(View v) {
-            Intent i = new Intent(this.context, EditMenu.class);
-            i.putExtra("MENU_ID", id);
-            i.putExtra("MENU_NAME", mMenuNameTV.getText().toString());
-            i.putExtra("MENU_DESCRIPTION", mMenuDescTV.getText().toString());
-            i.putExtra("MENU_PRICE", mMenuPriceTV.getText().toString());
-            i.putExtra("RESTAURANT_ID", restaurantId);
-
-            this.context.startActivity(i);
+            Toast.makeText(this.context, mMenuNameTV.getText().toString(), Toast.LENGTH_LONG).show();
         }
     }
 }

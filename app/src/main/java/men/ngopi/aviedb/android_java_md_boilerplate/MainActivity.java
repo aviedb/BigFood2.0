@@ -8,11 +8,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
+
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONArrayRequestListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -27,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRestaurantRecycler;
     private RecyclerView.Adapter mRestaurantAdapter;
     private RecyclerView.LayoutManager mRestaurantLayout;
-    private MaterialButton mAddRestaurant;
     private TextInputEditText search;
 
     private String searchQuery = "";
@@ -76,14 +84,40 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mAddRestaurant = findViewById(R.id.btn_add_restaurant);
-        mAddRestaurant.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, AddRestaurant.class);
-                startActivity(i);
-            }
-        });
+        AndroidNetworking.initialize(getApplicationContext());
+
+        AndroidNetworking.get("https://bigfood-api.herokuapp.com/")
+                .build()
+                .getAsJSONArray(new JSONArrayRequestListener() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        for (int i = 0; i < response.length(); i++) {
+                            try {
+                                JSONObject jsonobject = response.getJSONObject(i);
+                                Restaurant restaurant = new Restaurant(
+                                        jsonobject.getInt("id"),
+                                        jsonobject.getString("restaurant"),
+                                        jsonobject.getString("alamat")
+                                );
+
+                                Log.d("tttt", "onResponse: " + jsonobject.getString("restaurant"));
+                                restaurants.add(restaurant);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                        mRestaurantAdapter = new RestaurantAdapter(restaurants);
+                        mRestaurantRecycler.setAdapter(mRestaurantAdapter);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.e("tttt", "onError: " + anError);
+                    }
+                });
     }
 
     public void search() {
@@ -100,11 +134,10 @@ public class MainActivity extends AppCompatActivity {
         restaurantHelper.close();
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
 
-        this.fetchAllRestaurants();
+//        this.fetchAllRestaurants();
     }
 }

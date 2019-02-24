@@ -19,6 +19,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.amitshekhar.android:android-networking:1.0.2'
     api 'com.android.support:design:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation fileTree(dir: 'libs', include: ['*.jar'])

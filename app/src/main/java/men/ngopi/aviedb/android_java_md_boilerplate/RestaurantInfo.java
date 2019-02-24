@@ -9,12 +9,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONArrayRequestListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -25,8 +34,6 @@ public class RestaurantInfo extends AppCompatActivity {
     private RecyclerView mMenuRecycler;
     private RecyclerView.Adapter mMenuAdapter;
     private RecyclerView.LayoutManager mMenuLayout;
-    private MaterialButton mAddMenu;
-    private MaterialButton mEditRestaurant;
     private TextInputEditText search;
     private TextView mRestaurantname;
 
@@ -70,29 +77,6 @@ public class RestaurantInfo extends AppCompatActivity {
                     extras.getString("RESTAURANT_ADDRESS")
             );
         }
-
-        mAddMenu = findViewById(R.id.btn_add_menu);
-        mAddMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(RestaurantInfo.this, AddMenu.class);
-                i.putExtra("RESTAURANT_ID", restaurantId);
-                startActivity(i);
-            }
-        });
-
-        mEditRestaurant = findViewById((R.id.btn_edit_restaurant));
-        mEditRestaurant.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(RestaurantInfo.this, EditRestaurant.class);
-                i.putExtra("RESTAURANT_ID", getIntent().getIntExtra("RESTAURANT_ID", 0));
-                i.putExtra("RESTAURANT_NAME", getIntent().getStringExtra("RESTAURANT_NAME"));
-                i.putExtra("RESTAURANT_ADDRESS", getIntent().getStringExtra("RESTAURANT_ADDRESS"));
-
-                startActivityForResult(i, 2);
-            }
-        });
 
         search = findViewById(R.id.search_menu);
         search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -149,7 +133,51 @@ public class RestaurantInfo extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        AndroidNetworking.get("https://bigfood-api.herokuapp.com/")
+                .build()
+                .getAsJSONArray(new JSONArrayRequestListener() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        for (int i = 0; i < response.length(); i++) {
+                            try {
+                                JSONObject jsonobject = response.getJSONObject(i);
+
+                                int restaurantID = getIntent().getIntExtra("RESTAURANT_ID", 0);
+                                if(jsonobject.getInt("id") == restaurantID) {
+                                    JSONArray jsonmenu = jsonobject.getJSONArray("menus");
+                                    for (int j = 0; j < jsonmenu.length(); j++) {
+                                        JSONObject jsonobjectmenu = jsonmenu.getJSONObject(j);
+
+                                        Menu menu = new Menu(
+                                                jsonobjectmenu.getInt("id"),
+                                                jsonobjectmenu.getString("menu"),
+                                                jsonobjectmenu.getString("description"),
+                                                jsonobjectmenu.getString("harga"),
+                                                restaurantID
+                                        );
+
+                                        menus.add(menu);
+                                    }
+                                    break;
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                        mMenuAdapter = new MenuAdapter(menus);
+                        mMenuRecycler.setAdapter(mMenuAdapter);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.e("tttt", "onError: " + anError);
+                    }
+                });
+
         //refetch
-        this.fetchMenus();
+//        this.fetchMenus();
     }
 }
