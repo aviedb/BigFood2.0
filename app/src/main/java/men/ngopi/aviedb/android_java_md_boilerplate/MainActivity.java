@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mRestaurantLayout;
     private TextInputEditText search;
 
+    private MaterialButton buttonthatgoestousersactivity;
+
     private String searchQuery = "";
     private ArrayList<Restaurant> restaurants = new ArrayList<>();
 
@@ -84,9 +86,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        buttonthatgoestousersactivity = findViewById(R.id.goes_to_users);
+        buttonthatgoestousersactivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, UserActivity.class);
+                startActivity(i);
+            }
+        });
+
         AndroidNetworking.initialize(getApplicationContext());
 
-        AndroidNetworking.get("https://bigfood-api.herokuapp.com/")
+        AndroidNetworking.get("http://192.168.43.62:3000/")
                 .build()
                 .getAsJSONArray(new JSONArrayRequestListener() {
                     @Override
@@ -122,7 +133,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void search() {
         searchQuery = search.getText().toString();
-        fetchAllRestaurants();
+        ArrayList<Restaurant> filtered = new ArrayList<>();
+
+        for (int i = 0; i < this.restaurants.size(); i++) {
+            if (this.restaurants.get(i).getRestaurantName().toLowerCase().contains(searchQuery.toLowerCase())) {
+                filtered.add(this.restaurants.get(i));
+            }
+        }
+
+        mRestaurantAdapter = new RestaurantAdapter(filtered);
+        mRestaurantRecycler.setAdapter(mRestaurantAdapter);
     }
 
     public void fetchAllRestaurants() {

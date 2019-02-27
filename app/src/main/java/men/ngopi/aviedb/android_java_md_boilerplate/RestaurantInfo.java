@@ -107,7 +107,16 @@ public class RestaurantInfo extends AppCompatActivity {
 
     public void search() {
         searchQuery = search.getText().toString();
-        fetchMenus();
+        ArrayList<Menu> filtered = new ArrayList<>();
+
+        for (int i = 0; i < this.menus.size(); i++) {
+            if (this.menus.get(i).getMenuName().toLowerCase().contains(searchQuery.toLowerCase())) {
+                filtered.add(this.menus.get(i));
+            }
+        }
+
+        mMenuAdapter = new MenuAdapter(filtered);
+        mMenuRecycler.setAdapter(mMenuAdapter);
     }
 
     public void fetchMenus() {
@@ -133,7 +142,7 @@ public class RestaurantInfo extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        AndroidNetworking.get("https://bigfood-api.herokuapp.com/")
+        AndroidNetworking.get("http://192.168.43.62:3000/")
                 .build()
                 .getAsJSONArray(new JSONArrayRequestListener() {
                     @Override

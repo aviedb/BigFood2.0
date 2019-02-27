@@ -12,4 +12,5 @@
     <string name="menu_description">Menu Description</string>
     <string name="menu_price">Menu Price</string>
     <string name="edit_or_delete_restaurant">Edit or Delete Restaurant</string>
+    <string name="title_activity_user">UserActivity</string>
 </resources>
